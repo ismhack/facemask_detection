@@ -27,44 +27,30 @@ for index = 1: number
     end
 end
 
-average2 = [mean(digits2')]';
-
-% center points
-centered_points2 = zeros(rows * cols, total2_count);
-for index = 1:(total2_count)
-    centered_points2( :, index) = centered_points2(:, index) - average2;
-end
-
-% covariance
-
-covariance_matrix2 = centered_points2 * centered_points2';
-
-[eigenvectors, eigenvalues] = eig(covariance_matrix2);
-% eigenvalues is a matrix, but only the diagonal matters, so we throw
-% away the rest
-eigenvalues = diag(eigenvalues);
-[eigenvalues, indices] = sort(eigenvalues, 'descend');
-eigenvectors = eigenvectors(:, indices);
-
-figure(1); imshow(reshape(eigenvectors(:, 1),rows, cols), []);
-figure(2); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(3); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(4); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(5); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
 
 
-[mean_face, eigenvectors_2, eigenvalues] = compute_pca(digits2); 
+[averag2, eigenvectors2, eigenvalues2] = compute_pca(digits2); 
+figure(1); imshow(reshape(eigenvectors2(:, 1),rows, cols), []);
+figure(2); imshow(reshape(eigenvectors2(:, 2),rows, cols), []);
+figure(3); imshow(reshape(eigenvectors2(:, 3),rows, cols), []);
+figure(4); imshow(reshape(eigenvectors2(:, 4),rows, cols), []);
+figure(5); imshow(reshape(eigenvectors2(:, 5),rows, cols), []);
 
-figure(6); imshow(reshape(eigenvectors(:, 1),rows, cols), []);
-figure(7); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(8); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(9); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
-figure(10); imshow(reshape(eigenvectors(:, 2),rows, cols), []);
+
+[average3, eigenvectors3, eigenvalues3] = compute_pca(digits3); 
+
+figure(6); imshow(reshape(eigenvectors3(:, 1),rows, cols), []);
+figure(7); imshow(reshape(eigenvectors3(:, 2),rows, cols), []);
+figure(8); imshow(reshape(eigenvectors3(:, 3),rows, cols), []);
+figure(9); imshow(reshape(eigenvectors3(:, 4),rows, cols), []);
+figure(10); imshow(reshape(eigenvectors3(:, 5),rows, cols), []);
 
 
 %% TEST detect digit
-test = read_gray('test40.bmp');
-[row, col] = detect_digit(test, average3);
+image = read_gray('new_three1.bmp');
+[row, col, result] = pca_detect_digit(image, reshape(average3, [rows cols]), eigenvectors3, 10);
+
+draw_rectangle2(image, row, col, 
 
 %% TEST recognize digit all test data
 correct =0;

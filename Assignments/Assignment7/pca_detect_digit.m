@@ -3,23 +3,24 @@ function [row, col, result] = pca_detect_digit(image, mean_digit, eigenvectors, 
 [rows, cols] = size(image);
 [trows, tcols] = size(mean_digit);
 window = zeros(trows, tcols);
-result = zeros([(trows*tcols), 1]);
-
+result = realmax;
+row = 0;
+col =0;
 disp(rows);
-for i = 0:rows
-    for j = 0:cols
-        xrow = i + trows;
-        ycol = j + tcols;
+for i = 1:rows
+    for j = 1:cols
+        xrow = i + trows -1;
+        ycol = j + tcols -1;
         if xrow <= rows && ycol <= cols
-            fprintf('Checking window %d X %d \n', xrow, ycol);
-            window = image(i: xrow, j: jcol);
-            result = pca_score(window, mean_digit, eigenvectors, N);
+            window = image(i: xrow, j: ycol);
+            temp = pca_score(window, mean_digit, eigenvectors, N);
+            fprintf('Checking window row:%d-%d  col:%d-%d,  result:%f.2 \n',i, xrow,j, ycol, temp);
+            if(temp < result)
+               result = temp;
+               col = ceil((i + xrow)/2);
+               row = ceil((j + ycol)/2);
+            end    
         end
     end
 end
-
-row = 0;
-col =0;
-
-figure(1); imshow(reshape(window, [28,28]), []);
 

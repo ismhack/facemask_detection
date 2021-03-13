@@ -11,20 +11,22 @@ total3_count = size(find(mnist_labels ==3),1);
 digits2 = zeros(rows*cols, total2_count);
 digits3 = zeros(rows*cols, total3_count);
 % set mean of all faces to 0, and std to 1.
-for index = 1: number
-    if(mnist_labels(index) ==2)
+count=1;
+for index = find(mnist_labels==2)
         digit = mnist_digits(:,:, index);
         digit = digit(:);
         digit = (digit - mean(digit)) / std(digit);
-        digits2(:, index) = digit;
-    end
-    
-    if(mnist_labels(index) ==3)
+        digits2(:, count) = digit;
+        count= count+1;
+end
+
+count=1;
+for index = find(mnist_labels==3)
         digit = mnist_digits(:,:, index);
         digit = digit(:);
         digit = (digit - mean(digit)) / std(digit);
-        digits3(:, index) = digit;
-    end
+        digits3(:, count) = digit;
+        count= count+1;
 end
 
 
@@ -47,8 +49,10 @@ figure(10); imshow(reshape(eigenvectors3(:, 5),rows, cols), []);
 
 
 %% TEST detect digit
-image = read_gray('new_three1.bmp');
-[row, col, result] = pca_detect_digit(image, average3, eigenvectors3, 10);
+image = read_gray('new_three20.bmp');
+[row, col, result] = pca_detect_digit(image, reshape(average3, [rows cols]), eigenvectors3, 10);
+
+figure(3); imshow(draw_rectangle2(image, row, col, rows, cols), []);
 
 %% TEST recognize digit all test data
 correct =0;
