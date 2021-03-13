@@ -1,1 +1,0 @@
-Copyright: Hedvig Kjellström
