@@ -5,19 +5,19 @@ load_mnist
 bl_threshold = 0;
 shape = mnist_digits(:,:,434) > bl_threshold;
 
-mu00 = central_moment(shape, 0, 0);
-
-n11 = central_moment(shape, 1, 1)/mu00;
-
-
+disp('central moments');
 result = central_moment(shape, 0, 0)
 result = central_moment(shape, 0, 1)
 result = central_moment(shape, 1, 0)
 result = central_moment(shape, 1, 1)
 result = central_moment(shape, 2, 2)
 result = central_moment(shape, 3, 3)
-
+result = central_moment(shape, 1, 2)
+result = central_moment(shape, 2, 1)
+result = central_moment(shape, 3, 2)
+%%
 %normalized
+disp('normalized moments');
 result = normalized_moment(shape, 0, 0)
 result = normalized_moment(shape, 0, 1)
 result = normalized_moment(shape, 1, 0)
@@ -25,7 +25,8 @@ result = normalized_moment(shape, 1, 1)
 result = normalized_moment(shape, 2, 2)
 result = normalized_moment(shape, 3, 3)
 
-%hu 
+%% hu 
+disp('hu moments');
 result = hu_moment(shape, 1)
 result = hu_moment(shape, 2)
 result = hu_moment(shape, 3)
@@ -34,14 +35,94 @@ result = hu_moment(shape, 5)
 result = hu_moment(shape, 6)
 result = hu_moment(shape, 7)
 
-%% Training
+%% testing central moment
 
-for i = 1:10
-    label = mnist_labels(i);
-    shape = mnist_digits(:,:,i) > bl_threshold;
+class = zeros(100,1) + realmax;
+indexes = zeros(100,1);
+detected = 0;
+not_detected = 0; 
 
-    M11 = central_moment(shape, 1,1);
-    fprintf('CM: %d, label: %d \n',M11, label);
+
+for i = 6001:6100
+    shape = mnist_digits(:,:,i);
+    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    [result,index] = classify_digit_cm(shape);
+    if(mnist_labels(i) == result)
+        detected = detected +1;
+    else
+        not_detected = not_detected +1;
+    end
+    class(i - 6000) = result;
+    indexes(i - 6000) = index;
 end
+figure(1);
+plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+
+%% testing normalized moment
+
+class = zeros(100,1) + realmax;
+indexes = zeros(100,1);
+
+detected = 0;
+not_detected = 0; 
+
+for i = 6001:6100
+    shape = mnist_digits(:,:,i);
+    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    [result,index] = classify_digit_nm(shape);
+    if(mnist_labels(i) == result)
+        detected = detected +1;
+    else
+        not_detected = not_detected +1;
+    end
+    class(i - 6000) = result;
+    indexes(i - 6000) = index;
+end
+
+figure(1);
+plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+
+%% testing hue moments
+
+
+class = zeros(100,1) + realmax;
+indexes = zeros(100,1);
+
+detected = 0;
+not_detected = 0; 
+
+for i = 6001:6100
+    shape = mnist_digits(:,:,i);
+    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    [result,index] = classify_digit_hu(shape);
+    if(mnist_labels(i) == result)
+        detected = detected +1;
+    else
+        not_detected = not_detected +1;
+    end
+    class(i - 6000) = result;
+    indexes(i - 6000) = index;
+end
+
+figure(1);
+plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+
+
+%% plot single detection
+query =6077;
+
+    shape = mnist_digits(:,:,query);
+    fprintf('Checking: %d',  mnist_labels(query));
+    [result,index] = classify_digit_hu(shape);
+
+
+
+figure(3); 
+subplot(1,2,1);
+imshow(mnist_digits(:,:,query), []);
+title('test');  
+subplot(1,2,2);
+imshow(mnist_digits(:,:,index), []);
+title('found',index);  
 
  

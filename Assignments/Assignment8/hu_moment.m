@@ -17,8 +17,10 @@ switch i
         n03 = normalized_moment(shape, 0, 3);
         n12 = normalized_moment(shape, 1, 2);
         n21 = normalized_moment(shape, 2, 1);
-         result = ((n30 - 3*n12)*(n30 + n12))*((n30 + n12)^2 - 3*((n21 + n03)^2));
-         result = result + (3*n21 - n03)*(n21 + n03)* (3*((n30 + n12)^2) - (n21 + n03)^2);
+        temp1 = (n30 + n12)^2 - 3*((n21 + n03)^2);
+        temp2 = 3*((n30 + n12)^2) - (n03 + n21)^2;
+        result = (n30 - (3*n12))*(n30 + n12)* temp1 + ...
+            (3*n21 - n03)*(n21 + n03)*temp2;
     case 6
         n30 = normalized_moment(shape, 3, 0);
         n03 = normalized_moment(shape, 0, 3);
@@ -35,8 +37,10 @@ switch i
         n03 = normalized_moment(shape, 0, 3);
         n12 = normalized_moment(shape, 1, 2);
         n21 = normalized_moment(shape, 2, 1);
-        result = (3*n21 - n03)*(n30 +n12)*((n30 +n12)^2 - 3*(n21 + n03)^2);
-        result = result - (n30 - 3*n12)*(n21 +n03)*(3*((n30+n12)^2) - (n21+n03)^2);
+        temp1= (n30 + n12)^2 - 3*((n21 + n03)^2);
+        temp2= 3*((n30 + n12)^2) - (n03 + n21)^2;
+        result =(3*n21 - n03)*(n30 + n12)*(temp1) - ...
+            (n30 - 3*n12)*(n21 + n03)*(temp2);
     otherwise
         result=0;
         
