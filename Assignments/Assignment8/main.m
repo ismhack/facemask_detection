@@ -37,75 +37,77 @@ result = hu_moment(shape, 7)
 
 %% testing central moment
 
-class = zeros(100,1) + realmax;
-indexes = zeros(100,1);
+class = zeros(5000,1) + realmax;
+indexes = zeros(5000,1);
 detected = 0;
 not_detected = 0; 
 
-
-for i = 6001:6100
+for i = 5001:10000
     shape = mnist_digits(:,:,i);
-    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    fprintf('%d - Checking: %d ', i, mnist_labels(i));
     [result,index] = classify_digit_cm(shape);
     if(mnist_labels(i) == result)
         detected = detected +1;
     else
         not_detected = not_detected +1;
     end
-    class(i - 6000) = result;
-    indexes(i - 6000) = index;
+    class(i - 5000) = result;
+    indexes(i - 5000) = index;
 end
 figure(1);
-plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+cm = confusionmat(categorical(mnist_labels(5001:10000)),categorical(class) );
+plotconfusion(categorical(mnist_labels(5001:10000)),categorical(class));
 
 %% testing normalized moment
 
-class = zeros(100,1) + realmax;
-indexes = zeros(100,1);
+class = zeros(5000,1) + realmax;
+indexes = zeros(5000,1);
 
 detected = 0;
 not_detected = 0; 
 
-for i = 6001:6100
+for i = 5001:10000
     shape = mnist_digits(:,:,i);
-    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    fprintf('%d - Checking: %d ', i, mnist_labels(i));
     [result,index] = classify_digit_nm(shape);
     if(mnist_labels(i) == result)
         detected = detected +1;
     else
         not_detected = not_detected +1;
     end
-    class(i - 6000) = result;
-    indexes(i - 6000) = index;
+    class(i - 5000) = result;
+    indexes(i - 5000) = index;
 end
 
 figure(1);
-plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+cm = confusionmat(categorical(mnist_labels(5001:10000)),categorical(class) );
+plotconfusion(categorical(mnist_labels(5001:10000)),categorical(class));
 
 %% testing hue moments
 
 
-class = zeros(100,1) + realmax;
-indexes = zeros(100,1);
+class = zeros(5000,1) + realmax;
+indexes = zeros(5000,1);
 
 detected = 0;
 not_detected = 0; 
 
-for i = 6001:6100
+for i = 5001:10000
     shape = mnist_digits(:,:,i);
-    fprintf('%d - Checking: %d', i, mnist_labels(i));
+    fprintf('%d - Checking: %d ', i, mnist_labels(i));
     [result,index] = classify_digit_hu(shape);
     if(mnist_labels(i) == result)
         detected = detected +1;
     else
         not_detected = not_detected +1;
     end
-    class(i - 6000) = result;
-    indexes(i - 6000) = index;
+    class(i - 5000) = result;
+    indexes(i - 5000) = index;
 end
 
 figure(1);
-plotconfusion(categorical(mnist_labels(6001:6100)),categorical(class));
+cm = confusionmat(categorical(mnist_labels(5001:10000)),categorical(class) );
+plotconfusion(categorical(mnist_labels(5001:10000)),categorical(class));
 
 
 %% plot single detection

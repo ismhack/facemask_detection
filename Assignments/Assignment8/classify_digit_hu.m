@@ -17,7 +17,7 @@ end
 
 test = digit > bl_threshold;
   test_cm = [hu_moment(test,1); hu_moment(test, 2); hu_moment(test, 3); hu_moment(test, 4); hu_moment(test, 5); hu_moment(test, 6); hu_moment(test,7);];
-  fprintf(' -HU[%d, %d, %d, %d, %d, %d, %d]\n', test_cm.');
+  %fprintf(' -HU[%d, %d, %d, %d, %d, %d, %d]\n', test_cm.');
 substract = realmax;
 result = -1;
 
@@ -27,10 +27,11 @@ for i = 1:5000
     label =  hu_moments(i, 8);
     temp = sqrt(sum((q_cm - test_cm).^2));
     if(temp < substract)
-        fprintf('%d - HU[%d, %d, %d, %d, %d, %d, %d] label: %d,  difference: %f \n',i,q_cm.', label, temp);
+        %fprintf('%d - HU[%d, %d, %d, %d, %d, %d, %d] label: %d,  difference: %f \n',i,q_cm.', label, temp);
         substract = (temp);
         result = label;
         index = i;
     end
     
 end
+fprintf('Classified as: %d \n',result); 

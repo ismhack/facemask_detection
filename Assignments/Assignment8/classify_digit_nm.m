@@ -17,7 +17,7 @@ end
 
 test = digit > bl_threshold;
   test_cm = [normalized_moment(test, 0,0); normalized_moment(test, 1,1); normalized_moment(test, 2,0); normalized_moment(test, 0,2); normalized_moment(test, 2,1); normalized_moment(test, 1,2); normalized_moment(test, 3,0); normalized_moment(test, 0,3);];
-  fprintf(' -N[%d, %d, %d, %d, %d, %d,  %d, %d]\n', test_cm.');
+  %fprintf(' -N[%d, %d, %d, %d, %d, %d,  %d, %d]\n', test_cm.');
 substract = realmax;
 result = -1;
 
@@ -27,10 +27,12 @@ for i = 1:5000
     label =  normalized_moments(i, 9);
     temp = sqrt(sum((q_cm - test_cm).^2));
     if(temp < substract)
-        fprintf('%d - N[%d, %d, %d, %d, %d, %d,  %d, %d] label: %d,  difference: %f \n',i,q_cm.', label, temp);
+        %fprintf('%d - N[%d, %d, %d, %d, %d, %d,  %d, %d] label: %d,  difference: %f \n',i,q_cm.', label, temp);
         substract = (temp);
         result = label;
         index = i;
     end
     
 end
+
+fprintf('Classified as: %d \n',result); 
