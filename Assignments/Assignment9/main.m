@@ -43,35 +43,44 @@ Ytrain = categorical(Ytrain);
 layers = [
     imageInputLayer([h w c]) % Dimensions of a single input image.
     
-    convolution2dLayer(6,8, 'Padding','same') % 1st convolutional layer.
-    batchNormalizationLayer                    % Batch normalization.
-    reluLayer                                  % ReLU activation. 
+    convolution2dLayer(3, 24,'Stride',2, 'Padding', 'same') % 1st convolutional layer.
+    reluLayer
+    crossChannelNormalizationLayer(5,'K',1)
     
-    maxPooling2dLayer(2, 'Stride', 2)          % Max pooling.
+    maxPooling2dLayer(2, 'Stride', 1,'Padding', 'same')          % Max pooling.
     
-    convolution2dLayer(4, 16, 'Padding', 'same')% 2nd convolutional layer.
-    batchNormalizationLayer
+    convolution2dLayer(2, 48, 'Stride', 1, 'Padding', 0)% 2nd convolutional layer.
+    reluLayer
+    crossChannelNormalizationLayer(5,'K',1)
+    
+    maxPooling2dLayer(1, 'Stride', 1)
+    
+    convolution2dLayer(3, 126, 'Stride', 1, 'Padding', 1)% 3rd convolutional layer.
     reluLayer
     
-    maxPooling2dLayer(2, 'Stride', 2)
-    
-    convolution2dLayer(2, 32, 'Padding', 'same')% 3rd convolutional layer.
-    batchNormalizationLayer
+    convolution2dLayer(3, 192, 'Stride',1, 'Padding', 1)% 4rd convolutional layer.
     reluLayer
     
-    maxPooling2dLayer(1, 'Stride', 2)
-    
-    convolution2dLayer(3, 62, 'Padding', 'same')% 3rd convolutional layer.
-    batchNormalizationLayer
+    convolution2dLayer(3, 192,'Stride',1, 'Padding', 1)% 5rd convolutional layer.
     reluLayer
-        
+     
+    maxPooling2dLayer(1, 'Stride', 1)    
+    
+    fullyConnectedLayer(192)
+    reluLayer
+    dropoutLayer(0.5)
+    
+    fullyConnectedLayer(32)
+    reluLayer
+    dropoutLayer(0.5)
+    
     fullyConnectedLayer(2)
     softmaxLayer
     classificationLayer];
 
 options = trainingOptions('sgdm', ... % Stochastic gradient descent with momentum.
     'InitialLearnRate', 0.001, ...     % Learning rate.
-    'MaxEpochs', 5, ...               % How many epochs to train.
+    'MaxEpochs', 10, ...               % How many epochs to train.
     'Shuffle', 'every-epoch', ...     % Shuffle the training data every epoch.
     'Verbose', true, ...              % Show the progress of the training process.
     'Plots', 'training-progress');    % Plot diagrams of the training process.
