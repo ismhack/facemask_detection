@@ -1,6 +1,6 @@
-function [result, boxes] = cnn_detector_demo(image, scales, model, face_size, result_number)
+function [result, boxes, temp_result] = cnn_detector_demo(image, scales, model, face_size, result_number)
 
-result = ones(size(image)) * -10;
+result = [];
     if scales(1) >= 1
         if(scales(1)  == 1)
             scaled_image = image;
@@ -8,10 +8,11 @@ result = ones(size(image)) * -10;
             scaled_image = imresize(image, 1/scales(1) , 'bilinear');
         end
         temp_result = cnn_detector(scaled_image, model, face_size);
-        result = imresize(result, size(temp_result));
+        %result = imresize(result, size(temp_result));
+        result = temp_result;
         %temp_result = imresize(temp_result, size(image));
     else
-        scaled_face = face_size * scale;
+        scaled_face = face_size * scale(1);
         temp_result = cnn_detector(image, model, scaled_face);
         result =temp_result;
     end
@@ -28,9 +29,9 @@ while result_number >= i && predval >= 0.5
     
     [val, index] = max(result(:));
     [r,c] = ind2sub(size(result),index);
-    fprintf('Max value = %f at (r,c)=(%d,%d)\n', val, r,c);
     predval = val;
-    if((r-h2) <0)
+
+    if((r-h2) <= 0)
         h0 = 1;
     else
         h0 = r-h2;
@@ -41,7 +42,7 @@ while result_number >= i && predval >= 0.5
         h1 = (r+h2);
     end
     
-    if((c- w2) < 0)
+    if((c- w2) <= 0)
         w0 = 1;
     else
         w0 = (c- w2);
@@ -52,13 +53,14 @@ while result_number >= i && predval >= 0.5
     else
         w1 = (c +w2);
     end
-    window = result(h0:h1,w0:w1, 1:3);
-    if( min(window(:)) == 0)
-        result(h0:h1,w0:w1, 1:3) = 0;
-        continue;
-    end
+    fprintf('Max value = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', val, r,c,h0,h1,w0,w1); 
+    %window = result(h0:h1,w0:w1, :);
+    %if( min(window(:)) == 0)
+    %    result(h0:h1,w0:w1, :) = 0;
+    %    continue;
+    %end
       
-    result(h0:h1,w0:w1, 1:3) = 0;
+    result(h0:h1,w0:w1, :) = 0;
     
     image = draw_rectangle1(image,h0, h1, w0, w1);
     boxes(i,:) = [h0,h1,w0,w1, val];

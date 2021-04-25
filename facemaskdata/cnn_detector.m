@@ -4,7 +4,7 @@ function scores = cnn_detector(image, model, face_size)
 trows = face_size(1);
 tcols = face_size(2);
 c = face_size(3);
-window = zeros(trows, tcols);
+window = uint8(zeros(trows, tcols));
 scores = zeros(rows, cols);
 row = 0;
 col =0;
@@ -15,9 +15,9 @@ for i = 1:1:rows
         ycol = j + tcols -1;
         if xrow <= rows && ycol <= cols
             window = image(i: xrow, j: ycol, 1:c, :);
-            figure(1); imshow(reshape(window, [trows, tcols 3]), []);
+            %figure(1); imshow(window, []);
             score = model.predict(window);
-            fprintf('Checking window row:%d-%d  col:%d-%d,  result:[%.f, %.f]\n',i, xrow,j, ycol, score(1),score(2));
+            %fprintf('Checking window row:%d-%d  col:%d-%d,  result:[%.3f, %.3f]\n',i, xrow,j, ycol, score(1),score(2));
            row = floor((i + xrow)/2);
            col = floor((j + ycol)/2);
            
