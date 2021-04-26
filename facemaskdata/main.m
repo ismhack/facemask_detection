@@ -170,7 +170,7 @@ end
 test = rgb2gray(imread('photos/test1.jpg'));
 test = imresize(test, .4, 'bilinear');
 %test = imresize(test, 2, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 4); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 
@@ -213,17 +213,24 @@ tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 
+%% test 4
+
+test = rgb2gray(imread('photos/test4.jpg'));
+test = imresize(test, .8, 'bilinear');
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+
+figure(4); imshow(result, []);
 
 %% test 6
 
 test = read_gray('photos/test6.jpg');
+test = imresize(test, 1.4, 'bilinear');
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 10); toc;
 
-%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
-
-%figure(5); imshow(result, []);
-window1 = (test(150:249, 211:310, :));
-window2 = (test(80: 179, 50:149, :));
-window3 = (test(80:179, 240:339, :));
+figure(5); imshow(result, []);
+window1 = (test(100:199, 211:310, :));
+window2 = (test(80: 179, 130:229, :));
+window3 = (test(100:199, 330:429, :));
 
 y =net.predict(window1)
 y = classify(net, window1)

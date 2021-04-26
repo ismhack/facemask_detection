@@ -54,13 +54,13 @@ while result_number >= i && predval >= 0.5
         w1 = (c +w2);
     end
     fprintf('Max value = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', val, r,c,h0,h1,w0,w1); 
-    %window = result(h0:h1,w0:w1, :);
-    %if( min(window(:)) == 0)
-    %    result(h0:h1,w0:w1, :) = 0;
-    %    continue;
-    %end
+    window = result(h0:h1,w0:w1, :);
+    if( min(window(:)) == -1)
+        result(h0:h1,w0:w1, :) = -1;
+        continue;
+    end
       
-    result(h0:h1,w0:w1, :) = 0;
+    result(h0:h1,w0:w1, :) = -1;
     
     image = draw_rectangle1(image,h0, h1, w0, w1);
     boxes(i,:) = [h0,h1,w0,w1, val];
