@@ -170,7 +170,7 @@ end
 test = (imread('photos/test1.jpg'));
 test = imresize(test, .4, 'bilinear');
 %test = imresize(test, 2, 'bilinear');
-tic; [result boxes] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 
@@ -179,9 +179,9 @@ figure(5); imshow(result, []);
 
 test = imread('photos/test2.jpg');
 
-%tic; [result boxes] = cnn_detector_demo(test, 1, net, [h w c], 1); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 1); toc;
 
-%figure(5); imshow(result, []);
+figure(5); imshow(result, []);
 window1 = (test(113:212, 100:199, :));
 window2 = (test(80: 179, 50:149, :));
 window3 = (test(30:129, 180:279, :));
@@ -225,7 +225,7 @@ figure(4); imshow(result, []);
 
 test = imread('photos/test6.jpg');
 test = imresize(test, 1.4, 'bilinear');
-%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 10); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
 
 %figure(5); imshow(result, []);
 window1 = (test(100:199, 211:310, :));

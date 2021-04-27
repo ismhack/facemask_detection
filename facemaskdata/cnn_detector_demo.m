@@ -27,9 +27,9 @@ i=1;
 predval =1;
 disp(size(result));
 while result_number >= i && predval >= 0.5
-    
-    [val, index] = max(result(:,2));
-    [r,c] = ind2sub(size(result(:,2),index));
+    a = result(:,:,3);
+    [val, index] = max(a(:));
+    [r,c] = ind2sub([size(result,1) size(result,2)],index);
     predval = val;
 
     if((r-h2) <= 0)
