@@ -25,10 +25,11 @@ w2 = floor(tcols/2);
 boxes = zeros(result_number,5);
 i=1;
 predval =1;
+disp(size(result));
 while result_number >= i && predval >= 0.5
     
-    [val, index] = max(result(:,:,2));
-    [r,c] = ind2sub(size(result(:,:,2),index));
+    [val, index] = max(result(:,2));
+    [r,c] = ind2sub(size(result(:,2),index));
     predval = val;
 
     if((r-h2) <= 0)

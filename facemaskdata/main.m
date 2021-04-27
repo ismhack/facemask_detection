@@ -123,7 +123,7 @@ layers = [
 
 options = trainingOptions('sgdm', ... % Stochastic gradient descent with momentum.
     'InitialLearnRate', 0.01, ...     % Learning rate.
-    'MaxEpochs', 5, ...               % How many epochs to train.
+    'MaxEpochs', 7, ...               % How many epochs to train.
     'MiniBatchSize',128, ...
     'Shuffle', 'every-epoch', ...     % Shuffle the training data every epoch.
     'Verbose', true);              % Show the progress of the training process.
@@ -161,7 +161,7 @@ if isempty(idxs) ~= 1
         subplot(grid_rows,grid_cols,i);
         im_er = imread(string(augmentedTestSet.Files(idxs(i))));
         imshow(im_er,[]);
-        title(strcat(string(idxs(i)),' pred:', string(Ypred(idxs(i))), ' true:', string(testSet.Labels(idxs(i)))));
+        title(strcat(' pred:', string(Ypred(idxs(i))), ' true:', string(testSet.Labels(idxs(i)))));
     end
 end
 
@@ -184,9 +184,9 @@ test = imread('photos/test2.jpg');
 %figure(5); imshow(result, []);
 window1 = (test(113:212, 100:199, :));
 window2 = (test(80: 179, 50:149, :));
-window3 = (test(50:149, 180:279, :));
+window3 = (test(30:129, 180:279, :));
 
-y =net.predict(window1)
+tic; y =net.predict(window1); toc;
 y = classify(net, window1)
 figure(2); 
 subplot(1,3,1);
@@ -209,7 +209,7 @@ title(strcat(' pred:', string(y), ' true:1' ));
 
 test = (imread('photos/test3.jpg'));
 test = imresize(test, 2, 'bilinear');
-%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 

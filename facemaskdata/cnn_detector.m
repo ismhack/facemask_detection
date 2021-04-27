@@ -16,7 +16,7 @@ for i = 1:2:rows
         if xrow <= rows && ycol <= cols
             window = image(i: xrow, j: ycol, :);
             %figure(1); imshow(window, []);
-            scores = model.predict(window);
+            score = model.predict(window);
             %fprintf('Checking window row:%d-%d  col:%d-%d,  result:[%.3f, %.3f]\n',i, xrow,j, ycol, score(1),score(2));
            row = floor((i + xrow)/2);
            col = floor((j + ycol)/2);
