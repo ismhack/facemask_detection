@@ -1,6 +1,7 @@
 
+%% extract face and nonface patches from kaggle data
 
-class1 = "without_mask";
+class1 = "without_mask"; % applicable for the kaggle data
 class2 = "with_mask";
 class3 = "mask_weared_incorrect";
 h = 100;
@@ -29,12 +30,12 @@ for i = 0:852
 
         if S.object(j).name == class1
             class =class1;
-            className= "0";
+            className= "1";
         elseif S.object(j).name == class2
             class = class2;
-            className= "1";
+            className= "2";
         else
-            class = class3;
+            class = "0";
             continue;
         end
         fprintf('[%d %d %d] %d i:%d \n', size(face), count, i);
@@ -61,13 +62,13 @@ end
 
 
 %% data split
-
+c=3;
 imds = imageDatastore('data', 'LabelSource', 'foldernames', 'IncludeSubfolders',true);
 tbl = countEachLabel(imds)
 [trainingSet, testSet] = splitEachLabel(imds, 0.7, 'randomized');
 
-augmentedTrainingSet = augmentedImageDatastore([h w c], trainingSet,'ColorPreprocessing', 'rgb2gray');%'DataAugmentation',imageAugmenter); %'
-augmentedTestSet = augmentedImageDatastore([h w c], testSet, 'ColorPreprocessing', 'rgb2gray');
+augmentedTrainingSet = augmentedImageDatastore([h w c], trainingSet);%,'ColorPreprocessing', 'rgb2gray');%'DataAugmentation',imageAugmenter); %'
+augmentedTestSet = augmentedImageDatastore([h w c], testSet);%, 'ColorPreprocessing', 'rgb2gray');
 
 %Xtrain = im_dataset(:,:,:,1:655);
 %Xtest = im_dataset(:,:,:,656:939);
@@ -84,7 +85,7 @@ augmentedTestSet = augmentedImageDatastore([h w c], testSet, 'ColorPreprocessing
 minibatch = read(augmentedTrainingSet);
 figure (2);imshow(imtile(minibatch.input));
 
-minibatch = read(augmentedTestSet);
+
 minibatch = read(augmentedTestSet);
 figure(3);imshow(imtile(minibatch.input));
 %% Train
@@ -92,7 +93,6 @@ figure(3);imshow(imtile(minibatch.input));
 %Xtrain = reshape(Xtrain, [h, w, c, N_train]);
 
 %Xtest = reshape(Xtest, [h, w, c, N_test]);
-c=1;
 layers = [
     imageInputLayer([h w c]) % Dimensions of a single input image.
     convolution2dLayer(3, 8,'Padding', 'same') % 1st convolutional layer.
@@ -117,14 +117,14 @@ layers = [
     fullyConnectedLayer(16)
     reluLayer
     
-    fullyConnectedLayer(2)
+    fullyConnectedLayer(3)
     softmaxLayer
     classificationLayer];
 
 options = trainingOptions('sgdm', ... % Stochastic gradient descent with momentum.
     'InitialLearnRate', 0.01, ...     % Learning rate.
     'MaxEpochs', 5, ...               % How many epochs to train.
-    'MiniBatchSize',32, ...
+    'MiniBatchSize',128, ...
     'Shuffle', 'every-epoch', ...     % Shuffle the training data every epoch.
     'Verbose', true);              % Show the progress of the training process.
        % Plot diagrams of the training process.
@@ -167,21 +167,21 @@ end
 
 %% test 1
 
-test = rgb2gray(imread('photos/test1.jpg'));
+test = (imread('photos/test1.jpg'));
 test = imresize(test, .4, 'bilinear');
 %test = imresize(test, 2, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+tic; [result boxes] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 
 %% test 2
 
 
-test = read_gray('photos/test2.jpg');
+test = imread('photos/test2.jpg');
 
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 1); toc;
+%tic; [result boxes] = cnn_detector_demo(test, 1, net, [h w c], 1); toc;
 
-figure(5); imshow(result, []);
+%figure(5); imshow(result, []);
 window1 = (test(113:212, 100:199, :));
 window2 = (test(80: 179, 50:149, :));
 window3 = (test(50:149, 180:279, :));
@@ -207,15 +207,15 @@ title(strcat(' pred:', string(y), ' true:1' ));
 
 %% test 3
 
-test = rgb2gray(imread('photos/test3.jpg'));
+test = (imread('photos/test3.jpg'));
 test = imresize(test, 2, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
 figure(5); imshow(result, []);
 
 %% test 4
 
-test = rgb2gray(imread('photos/test4.jpg'));
+test = (imread('photos/test4.jpg'));
 test = imresize(test, .8, 'bilinear');
 tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
 
@@ -223,11 +223,11 @@ figure(4); imshow(result, []);
 
 %% test 6
 
-test = read_gray('photos/test6.jpg');
+test = imread('photos/test6.jpg');
 test = imresize(test, 1.4, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 10); toc;
+%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 10); toc;
 
-figure(5); imshow(result, []);
+%figure(5); imshow(result, []);
 window1 = (test(100:199, 211:310, :));
 window2 = (test(80: 179, 130:229, :));
 window3 = (test(100:199, 330:429, :));
@@ -254,7 +254,7 @@ title(strcat(' pred:', string(y), ' true:1' ));
 
 %% Test Demo test5
 
-test = read_gray('photos/test5.jpg');
+test = imread('photos/test5.jpg');
 
 %tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
 %figure(5); imshow(result, []);
