@@ -74,7 +74,7 @@ while result_number >= i && predval > 0.0
     else
         w1 = (c +w2 -1);
     end
-    fprintf('Max value = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', val, r,c,h0,h1,w0,w1); 
+    %fprintf('Max value = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', val, r,c,h0,h1,w0,w1); 
     window = result(h0:h1,w0:w1, :);
     if( min(window(:)) == -1)
         result(h0:h1,w0:w1, :) = -1;

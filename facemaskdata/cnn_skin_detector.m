@@ -2,16 +2,16 @@ function scores = cnn_skin_detector(image, model, face_size, positives, negative
 
 skin_detection = detect_skin(image, positives, negatives);
 
-figure (1); imshow(skin_detection, []);
+%figure (1); imshow(skin_detection, []);
 
 
 
 maxVal = max(max(skin_detection));
 minVal = min(min(skin_detection));
 
-mid = (90 * (maxVal - minVal) / 100) + minVal
+mid = (95 * (maxVal - minVal) / 100) + minVal;
 
-figure (2); imshow(skin_detection > mid, []);
+%figure (2); imshow(skin_detection > mid, []);
 positions = find(skin_detection > mid);
 image_size = size(image);
 h = face_size(1);%model.Layers(1).InputSize(1);
@@ -54,7 +54,7 @@ for i = 1:size(positions,1)
     scores(r, c,1) = score(1);
     scores(r, c,2) = score(2);
     scores(r, c,3) = score(3);
-    fprintf('predicting = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', score(3), r,c,h0,h1,w0,w1); 
+    %fprintf('predicting = %f at (r,c)=(%d,%d) bottom:top, left:right[%d %d %d %d] \n', score(3), r,c,h0,h1,w0,w1); 
     
 end
 

@@ -211,12 +211,12 @@ test = (imread('photos/test3.jpg'));
 positives = read_double_image('data/positives.bin');
 negatives = read_double_image('data/negatives.bin');
 
-test = cnn_skin_demo(test,[0.4],net, positives, negatives, 5);
-%tic; [result boxes scores] = cnn_detector_demo(test, [0.4], net, [h w c], 5); toc;
+tic; result1 = cnn_skin_demo(test,[0.4],net, positives, negatives, 3); toc;
+figure(5); imshow(result1, []);
+tic; [result2 boxes scores] = cnn_detector_demo(test, [0.4], net, [h w c], 3); toc;
 
 
-
-figure(5); imshow(test, []);
+figure(6); imshow(result2, []);
 
 %% test 4
 
