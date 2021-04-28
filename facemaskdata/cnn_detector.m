@@ -16,6 +16,12 @@ for i = 1:2:rows
         if xrow <= rows && ycol <= cols
             window = image(i: xrow, j: ycol, :);
             %figure(1); imshow(window, []);
+            if size(window,1) ~= model.Layers(1).InputSize(1) || ...
+                    size(window,2) ~= model.Layers(1).InputSize(2) || ...
+                    size(window,3) ~= model.Layers(1).InputSize(3)
+                window = imresize(window, model.Layers(1).InputSize(1:2));
+            end
+                
             score = model.predict(window);
             %fprintf('Checking window row:%d-%d  col:%d-%d,  result:[%.3f %.3f, %.3f]\n',i, xrow,j, ycol, score(1),score(2),score(3));
            row = floor((i + xrow)/2);

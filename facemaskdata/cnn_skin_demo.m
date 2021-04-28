@@ -1,19 +1,21 @@
-function [result, boxes, temp_result] = cnn_detector_demo(image, scales, model, face_size, result_number)
+function [image, boxes, temp_result] = cnn_skin_demo(image, scales, model, positives, negatives, result_number)
 
-result = zeros(size(image,1), size(image,2));
+image_size = size(image);
+result = zeros(image_size(1), image_size(2));
+face_size = model.Layers(1).InputSize;
 max_scales = [];
 for scale = scales
     if scales >= 1
         if(scale  == 1)
             scaled_image = image;
-            temp_result = cnn_detector(scaled_image, model, face_size);
+            temp_result = cnn_skin_detector(scaled_image, model, face_size,  positives, negatives);
             score_nonface = temp_result(:,:,1);
             score_face = temp_result(:,:,2);
             score_facemask = temp_result(:,:,3);
             temp_result = score_facemask;
         else
             scaled_image = imresize(image, 1/scale , 'bilinear');
-            temp_result = cnn_detector(scaled_image, model, face_size);
+            temp_result = cnn_skin_detector(scaled_image, model, face_size, positives, negatives);
             score_nonface = temp_result(:,:,1);
             score_face = temp_result(:,:,2);
             score_facemask = temp_result(:,:,3);
@@ -23,7 +25,7 @@ for scale = scales
 
     else
         scaled_face = face_size * scale;
-        temp_result = cnn_detector(image, model, scaled_face);
+        temp_result = cnn_skin_detector(image, model, scaled_face, positives, negatives);
         score_nonface = temp_result(:,:,1);
         score_face = temp_result(:,:,2);
         score_facemask = temp_result(:,:,3);
@@ -36,6 +38,7 @@ for scale = scales
     result(higher_maxes) = temp_result(higher_maxes);
 end
 
+
 [rows, cols] = size(image);
 trows = face_size(1);
 tcols = face_size(2);
@@ -43,8 +46,8 @@ h2 = floor(trows/2);
 w2 = floor(tcols/2);
 boxes = zeros(result_number,5);
 i=1;
-predval =1;
-while result_number >= i && predval >= 0.5
+predval=1;
+while result_number >= i && predval > 0.0
     [val, index] = max(result(:));
     [r,c] = ind2sub(size(result),index);
     predval = val;
@@ -85,5 +88,3 @@ while result_number >= i && predval >= 0.5
     i =  i+1;
 
 end
-
-result=image;

@@ -205,19 +205,28 @@ subplot(1,3,3);
 imshow((window3),[]);
 title(strcat(' pred:', string(y), ' true:1' ));
 
-%% test 3
+%% test 3 -  skin
 
 test = (imread('photos/test3.jpg'));
-test = imresize(test, 2, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+positives = read_double_image('data/positives.bin');
+negatives = read_double_image('data/negatives.bin');
 
-figure(5); imshow(result, []);
+test = cnn_skin_demo(test,[0.4],net, positives, negatives, 5);
+%tic; [result boxes scores] = cnn_detector_demo(test, [0.4], net, [h w c], 5); toc;
+
+
+
+figure(5); imshow(test, []);
 
 %% test 4
 
 test = (imread('photos/test4.jpg'));
-test = imresize(test, .8, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+positives = read_double_image('data/positives.bin');
+negatives = read_double_image('data/negatives.bin');
+%test = imresize(test, .8, 'bilinear');
+%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+
+skin_test = detect_skin(test, positives, negatives);
 
 figure(4); imshow(result, []);
 
@@ -256,8 +265,8 @@ title(strcat(' pred:', string(y), ' true:1' ));
 
 test = imread('photos/test5.jpg');
 
-%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
-%figure(5); imshow(result, []);
+tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
+figure(5); imshow(result, []);
 window1 = test(50:149, 100:199, :);
 window2 = test(50:149, 320:419, :);
 window3 = test(50:149, 490:589, :);
