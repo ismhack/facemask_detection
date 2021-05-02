@@ -1,7 +1,8 @@
-function [result, boxes, temp_result] = cnn_detector_demo(image, scales, model, face_size, result_number)
-
-result = zeros(size(image,1), size(image,2));
-max_scales = [];
+function [result, boxes, temp_result] = cnn_detector_demo(image, scales, model, result_number)
+image_size = size(image);
+result = zeros(image_size(1), image_size(2));
+face_size = model.Layers(1).InputSize;
+max_scales = zeros(image_size(1), image_size(2));
 for scale = scales
     if scales >= 1
         if(scale  == 1)
@@ -18,7 +19,6 @@ for scale = scales
             score_face = temp_result(:,:,2);
             score_facemask = temp_result(:,:,3);
             temp_result = imresize(score_facemask,size(image,1:2));
-            disp(size(temp_result));
         end
 
     else
@@ -30,32 +30,35 @@ for scale = scales
         temp_result = score_facemask;
         face_size = scaled_face;
     end
-    
     higher_maxes = (temp_result > result);
     max_scales(higher_maxes) = scale;
     result(higher_maxes) = temp_result(higher_maxes);
 end
 
-[rows, cols] = size(image);
-trows = face_size(1);
-tcols = face_size(2);
-h2 = floor(trows/2);
-w2 = floor(tcols/2);
+
 boxes = zeros(result_number,5);
 i=1;
 predval =1;
 while result_number >= i && predval >= 0.5
+    % mav val
     [val, index] = max(result(:));
     [r,c] = ind2sub(size(result),index);
     predval = val;
+    
+    % max scale
+    scale = max_scales(r,c);
+    trows = face_size(1) * scale;
+    tcols = face_size(2) * scale;
+    h2 = floor(trows/2);
+    w2 = floor(tcols/2);
 
     if((r-h2) <= 0)
         h0 = 1;
     else
         h0 = r-h2;
     end
-    if ((r+h2) > rows)
-        h1 = rows;
+    if ((r+h2) > image_size(1))
+        h1 = image_size(1);
     else
         h1 = (r+h2 -1);
     end
@@ -66,8 +69,8 @@ while result_number >= i && predval >= 0.5
         w0 = (c- w2);
     end
     
-    if((c+ w2) > cols)
-        w1 = cols;
+    if((c+ w2) > image_size(2))
+        w1 = image_size(2);
     else
         w1 = (c +w2 -1);
     end

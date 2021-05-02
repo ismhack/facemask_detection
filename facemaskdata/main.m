@@ -62,10 +62,12 @@ end
 
 
 %% data split
-c=3;
+h = 100;
+w = 100;
+c = 3; 
 imds = imageDatastore('data', 'LabelSource', 'foldernames', 'IncludeSubfolders',true);
 tbl = countEachLabel(imds)
-[trainingSet, testSet] = splitEachLabel(imds, 0.7, 'randomized');
+[trainingSet, testSet] = splitEachLabel(imds, 0.8, 'randomized');
 
 augmentedTrainingSet = augmentedImageDatastore([h w c], trainingSet);%,'ColorPreprocessing', 'rgb2gray');%'DataAugmentation',imageAugmenter); %'
 augmentedTestSet = augmentedImageDatastore([h w c], testSet);%, 'ColorPreprocessing', 'rgb2gray');
@@ -123,8 +125,8 @@ layers = [
 
 options = trainingOptions('sgdm', ... % Stochastic gradient descent with momentum.
     'InitialLearnRate', 0.01, ...     % Learning rate.
-    'MaxEpochs', 7, ...               % How many epochs to train.
-    'MiniBatchSize',128, ...
+    'MaxEpochs', 6, ...               % How many epochs to train.
+    'MiniBatchSize',64, ...
     'Shuffle', 'every-epoch', ...     % Shuffle the training data every epoch.
     'Verbose', true);              % Show the progress of the training process.
        % Plot diagrams of the training process.
@@ -168,20 +170,22 @@ end
 %% test 1
 
 test = (imread('photos/test1.jpg'));
-test = imresize(test, .4, 'bilinear');
+%test = imresize(test, .4, 'bilinear');
 %test = imresize(test, 2, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
+tic; [result boxes scores] = cnn_detector_demo(test, [0.4], net, 3); toc;
 
-figure(5); imshow(result, []);
+figure(1); imshow(result, []);
 
 %% test 2
 
 
 test = imread('photos/test2.jpg');
 
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 1); toc;
+%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, 1); toc;
 
-figure(5); imshow(result, []);
+tic; result1 = cnn_skin_demo(test,[0.6 .8 1 1.5],net, positives, negatives, 1); toc;
+
+figure(5); imshow(result1, []);
 window1 = (test(113:212, 100:199, :));
 window2 = (test(80: 179, 50:149, :));
 window3 = (test(30:129, 180:279, :));
@@ -205,36 +209,45 @@ subplot(1,3,3);
 imshow((window3),[]);
 title(strcat(' pred:', string(y), ' true:1' ));
 
-%% test 3 -  skin
+%% test 3 -  skin vs only cnn
 
 test = (imread('photos/test3.jpg'));
 positives = read_double_image('data/positives.bin');
 negatives = read_double_image('data/negatives.bin');
 
-tic; result1 = cnn_skin_demo(test,[0.4],net, positives, negatives, 3); toc;
+tic; result1 = cnn_skin_demo(test,[.45 0.5 .8],net, positives, negatives, 5); toc;
 figure(5); imshow(result1, []);
-tic; [result2 boxes scores] = cnn_detector_demo(test, [0.4], net, [h w c], 3); toc;
+%tic; [result2 boxes scores] = cnn_detector_demo(test, [0.5 .8 1], net, 3); toc;
 
 
-figure(6); imshow(result2, []);
+%skin_detection = detect_skin2(test, positives);
 
-%% test 4
+%maxVal = max(skin_detection(:));
+%minVal = min(skin_detection(:));
+
+%mid = (50 * (maxVal - minVal) / 100) + minVal;
+
+%figure(4); imshow(skin_detection>mid, []);
+%figure(6); imshow(result2, []);
+
+%% test 4 - skin
 
 test = (imread('photos/test4.jpg'));
 positives = read_double_image('data/positives.bin');
 negatives = read_double_image('data/negatives.bin');
 %test = imresize(test, .8, 'bilinear');
 %tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 3); toc;
-
-skin_test = detect_skin(test, positives, negatives);
-
-figure(4); imshow(result, []);
+tic; [result1, boxes, temp_result, max_scales] = cnn_skin_demo(test,[0.7 0.8 0.9 1 1.2],net, positives, negatives, 5); toc;
+figure(5); imshow(result1, []);
 
 %% test 6
 
 test = imread('photos/test6.jpg');
-test = imresize(test, 1.4, 'bilinear');
-tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
+%test = imresize(test, 1.4, 'bilinear');
+%tic; [result boxes scores] = cnn_detector_demo(test, 1, net, [h w c], 5); toc;
+
+tic; [result1, boxes, temp_result, max_scales] = cnn_skin_demo(test,[.7 .8 .9 .95 1 1.1],net, positives, negatives, 3); toc;
+figure(5); imshow(result1, []);
 
 %figure(5); imshow(result, []);
 window1 = (test(100:199, 211:310, :));

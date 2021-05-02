@@ -1,8 +1,8 @@
 function scores = cnn_detector(image, model, face_size)
 
 [rows, cols, c] = size(image);
-trows = face_size(1);
-tcols = face_size(2);
+trows = floor(face_size(1));
+tcols = floor(face_size(2));
 c = face_size(3);
 window = uint8(zeros(trows, tcols));
 scores = zeros(rows, cols, 3);
