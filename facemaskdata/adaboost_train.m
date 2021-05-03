@@ -220,6 +220,8 @@ figure(1); plot(accuracy_all);
 classifier_size = [3, 5, 10, 20];
 boosted_classifiers = cell(1, size(classifier_size,2));
 boosted_classifier = AdaBoost(responses, labels, max(classifier_size));
+%% extract cascade
+classifier_size = [1, 5, 15, 20];
 counter=1;
 for i = classifier_size
     boosted_classifiers{counter} = boosted_classifier(1:i,:);
@@ -260,3 +262,11 @@ test = rgb2gray(imread('data/training_test_data/test_face_photos/phil-jackson-an
 tic; [result, boxes] = boosted_detector_demo(test, .4:0.4:1.2, boosted_classifiers, weak_classifiers, [h, w], 2); toc;
 figure(1); imshow(test, []);
 figure(2); imshow(result, []);
+
+%% evaluate boosted classifier 6
+test = read_gray('data/training_test_data/test_face_photos/DSC01418.JPG');
+
+tic; [result, boxes] = boosted_detector_demo(test, 0.1:0.1:1, boosted_classifiers, weak_classifiers, [h, w], 5); toc;
+figure(1); imshow(test, []);
+figure(2); imshow(result, []);
+
